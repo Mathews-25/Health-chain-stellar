@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+
 import { OrderConfirmedEvent, OrderRiderAssignedEvent } from '../events';
 import { MapsService } from '../maps/maps.service';
 import { RiderRecord, RidersService } from '../riders/riders.service';

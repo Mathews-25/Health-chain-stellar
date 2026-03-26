@@ -5,6 +5,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ThrottlerException } from '@nestjs/throttler';
+
 import type { Response } from 'express';
 
 @Catch(ThrottlerException)
@@ -13,9 +14,9 @@ export class ThrottlerExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = HttpStatus.TOO_MANY_REQUESTS;
-    const raw =
-      typeof exception.message === 'string' ? exception.message : '';
-    const message = raw.replace(/^ThrottlerException:\s*/i, '').trim() ||
+    const raw = typeof exception.message === 'string' ? exception.message : '';
+    const message =
+      raw.replace(/^ThrottlerException:\s*/i, '').trim() ||
       'Rate limit exceeded. Please try again later.';
 
     response.status(status).json({

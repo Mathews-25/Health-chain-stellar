@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { UssdSessionStore } from './ussd-session.store';
 import {
   UssdStateMachine,
   BLOOD_TYPES,
   VALID_QUANTITIES,
   BLOOD_BANKS,
 } from './ussd-state-machine.service';
-import { UssdSessionStore } from './ussd-session.store';
 import { UssdSession, UssdStep } from './ussd.types';
 
 describe('UssdStateMachine', () => {

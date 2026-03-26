@@ -1,15 +1,17 @@
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThanOrEqual } from 'typeorm';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 
-import { OrderEntity } from '../orders/entities/order.entity';
-import { InventoryEntity } from './entities/inventory.entity';
+import { Queue } from 'bullmq';
+import { Repository, MoreThanOrEqual } from 'typeorm';
+
 import { InventoryLowEvent } from '../events/inventory-low.event';
+import { OrderEntity } from '../orders/entities/order.entity';
+
+import { InventoryEntity } from './entities/inventory.entity';
 import {
   DemandForecast,
   ForecastThreshold,

@@ -1,7 +1,9 @@
 import { getMetadataArgsStorage } from 'typeorm';
-import { OrganizationEntity } from './organization.entity';
+
 import { OrganizationType } from '../enums/organization-type.enum';
 import { VerificationStatus } from '../enums/verification-status.enum';
+
+import { OrganizationEntity } from './organization.entity';
 
 describe('OrganizationEntity', () => {
   const metadata = getMetadataArgsStorage();
@@ -56,11 +58,13 @@ describe('OrganizationEntity', () => {
   it('stores geolocation fields as decimal coordinates', () => {
     const latitudeColumn = metadata.columns.find(
       (column) =>
-        column.target === OrganizationEntity && column.propertyName === 'latitude',
+        column.target === OrganizationEntity &&
+        column.propertyName === 'latitude',
     );
     const longitudeColumn = metadata.columns.find(
       (column) =>
-        column.target === OrganizationEntity && column.propertyName === 'longitude',
+        column.target === OrganizationEntity &&
+        column.propertyName === 'longitude',
     );
 
     expect(latitudeColumn?.options.type).toBe('decimal');

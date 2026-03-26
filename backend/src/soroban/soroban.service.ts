@@ -1,5 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+
 import {
   Contract,
   TransactionBuilder,
@@ -12,8 +14,8 @@ import {
 } from '@stellar/stellar-sdk';
 import { Server } from '@stellar/stellar-sdk/rpc';
 import * as SorobanRpc from '@stellar/stellar-sdk/rpc';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { BlockchainEvent } from './entities/blockchain-event.entity';
 import {
   ContractError,

@@ -1,8 +1,11 @@
-import { of, throwError } from 'rxjs';
 import { ExecutionContext } from '@nestjs/common';
-import { ActivityLoggingInterceptor } from './activity-logging.interceptor';
-import { UserActivityService } from '../user-activity.service';
+
+import { of, throwError } from 'rxjs';
+
 import { ActivityType } from '../enums/activity-type.enum';
+import { UserActivityService } from '../user-activity.service';
+
+import { ActivityLoggingInterceptor } from './activity-logging.interceptor';
 
 describe('ActivityLoggingInterceptor', () => {
   const mockUserActivityService: jest.Mocked<Partial<UserActivityService>> = {
@@ -13,7 +16,9 @@ describe('ActivityLoggingInterceptor', () => {
     jest.clearAllMocks();
   });
 
-  function createHttpContext(request: Record<string, unknown>): ExecutionContext {
+  function createHttpContext(
+    request: Record<string, unknown>,
+  ): ExecutionContext {
     return {
       getType: () => 'http',
       switchToHttp: () => ({
@@ -33,18 +38,20 @@ describe('ActivityLoggingInterceptor', () => {
       user: { id: 'user-1' },
     });
 
-    interceptor.intercept(context, { handle: () => of({ ok: true }) }).subscribe({
-      complete: () => {
-        expect(mockUserActivityService.logActivity).toHaveBeenCalledWith(
-          expect.objectContaining({
-            activityType: ActivityType.AUTH_LOGIN_SUCCESS,
-            ipAddress: '10.0.0.1',
-            userAgent: 'jest',
-          }),
-        );
-        done();
-      },
-    });
+    interceptor
+      .intercept(context, { handle: () => of({ ok: true }) })
+      .subscribe({
+        complete: () => {
+          expect(mockUserActivityService.logActivity).toHaveBeenCalledWith(
+            expect.objectContaining({
+              activityType: ActivityType.AUTH_LOGIN_SUCCESS,
+              ipAddress: '10.0.0.1',
+              userAgent: 'jest',
+            }),
+          );
+          done();
+        },
+      });
   });
 
   it('logs failed login attempts', (done) => {

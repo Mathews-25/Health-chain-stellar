@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UserActivityService } from '../user-activity/user-activity.service';
+
 import { ActivityType } from '../user-activity/enums/activity-type.enum';
+import { UserActivityService } from '../user-activity/user-activity.service';
 
 @Injectable()
 export class UsersService {

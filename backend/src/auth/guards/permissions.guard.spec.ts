@@ -1,11 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PermissionsGuard } from './permissions.guard';
-import { PermissionsService } from '../permissions.service';
-import { Permission } from '../enums/permission.enum';
-import { PERMISSIONS_KEY } from '../decorators/require-permissions.decorator';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { PERMISSIONS_KEY } from '../decorators/require-permissions.decorator';
+import { Permission } from '../enums/permission.enum';
+import { PermissionsService } from '../permissions.service';
+
+import { PermissionsGuard } from './permissions.guard';
 
 // ────────────────────────────── helpers ──────────────────────────────────────
 

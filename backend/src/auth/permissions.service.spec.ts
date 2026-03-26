@@ -1,13 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
-import { PermissionsService } from './permissions.service';
-import { RoleEntity } from './entities/role.entity';
-import { RolePermissionEntity } from './entities/role-permission.entity';
-import { Permission } from './enums/permission.enum';
-import { UserRole } from './enums/user-role.enum';
+
 import { REDIS_CLIENT } from '../redis/redis.constants';
 import { UserActivityService } from '../user-activity/user-activity.service';
+
+import { RolePermissionEntity } from './entities/role-permission.entity';
+import { RoleEntity } from './entities/role.entity';
+import { Permission } from './enums/permission.enum';
+import { UserRole } from './enums/user-role.enum';
+import { PermissionsService } from './permissions.service';
 
 // ──────────────────────────── test helpers ───────────────────────────────────
 

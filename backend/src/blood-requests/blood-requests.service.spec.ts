@@ -1,24 +1,33 @@
 /// <reference types="jest" />
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import {
   BadRequestException,
   ForbiddenException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { BloodRequestsService } from './blood-requests.service';
-import { BloodRequestEntity } from './entities/blood-request.entity';
-import { BloodRequestItemEntity } from './entities/blood-request-item.entity';
-import { InventoryService } from '../inventory/inventory.service';
-import { SorobanService } from '../blockchain/services/soroban.service';
-import { EmailProvider } from '../notifications/providers/email.provider';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { UserRole } from '../auth/enums/user-role.enum';
+import { SorobanService } from '../blockchain/services/soroban.service';
+import { InventoryService } from '../inventory/inventory.service';
+import { EmailProvider } from '../notifications/providers/email.provider';
+
+import { BloodRequestsService } from './blood-requests.service';
+import { BloodRequestItemEntity } from './entities/blood-request-item.entity';
+import { BloodRequestEntity } from './entities/blood-request.entity';
 
 describe('BloodRequestsService', () => {
   let service: BloodRequestsService;
-  let bloodRequestRepo: { create: jest.Mock; save: jest.Mock; exist: jest.Mock };
+  let bloodRequestRepo: {
+    create: jest.Mock;
+    save: jest.Mock;
+    exist: jest.Mock;
+  };
   let bloodRequestItemRepo: { create: jest.Mock };
-  let inventory: { reserveStockOrThrow: jest.Mock; releaseStockByBankAndType: jest.Mock };
+  let inventory: {
+    reserveStockOrThrow: jest.Mock;
+    releaseStockByBankAndType: jest.Mock;
+  };
   let soroban: { submitTransactionAndWait: jest.Mock };
   let email: { send: jest.Mock };
 
@@ -54,7 +63,10 @@ describe('BloodRequestsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BloodRequestsService,
-        { provide: getRepositoryToken(BloodRequestEntity), useValue: bloodRequestRepo },
+        {
+          provide: getRepositoryToken(BloodRequestEntity),
+          useValue: bloodRequestRepo,
+        },
         {
           provide: getRepositoryToken(BloodRequestItemEntity),
           useValue: bloodRequestItemRepo,
@@ -74,9 +86,7 @@ describe('BloodRequestsService', () => {
         {
           hospitalId: 'other-hospital',
           requiredBy: futureIso(),
-          items: [
-            { bloodType: 'O+', quantity: 1, bloodBankId: 'bank-1' },
-          ],
+          items: [{ bloodType: 'O+', quantity: 1, bloodBankId: 'bank-1' }],
         },
         { id: 'my-hospital', role: UserRole.HOSPITAL, email: 'h@x.com' },
       ),
@@ -128,7 +138,9 @@ describe('BloodRequestsService', () => {
   });
 
   it('releases inventory when Soroban fails', async () => {
-    soroban.submitTransactionAndWait.mockRejectedValueOnce(new Error('chain down'));
+    soroban.submitTransactionAndWait.mockRejectedValueOnce(
+      new Error('chain down'),
+    );
 
     await expect(
       service.create(

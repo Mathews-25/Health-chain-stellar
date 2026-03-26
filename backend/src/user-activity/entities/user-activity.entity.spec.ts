@@ -1,6 +1,8 @@
 import { getMetadataArgsStorage } from 'typeorm';
-import { UserActivityEntity } from './user-activity.entity';
+
 import { ActivityType } from '../enums/activity-type.enum';
+
+import { UserActivityEntity } from './user-activity.entity';
 
 describe('UserActivityEntity', () => {
   const metadata = getMetadataArgsStorage();
@@ -34,7 +36,9 @@ describe('UserActivityEntity', () => {
       (activityTypeColumn?.options.enum ?? {}) as Record<string, string>,
     );
 
-    expect(enumValues).toEqual(expect.arrayContaining(Object.values(ActivityType)));
+    expect(enumValues).toEqual(
+      expect.arrayContaining(Object.values(ActivityType)),
+    );
   });
 
   it('has indexes for activity lookups and retention queries', () => {

@@ -1,20 +1,21 @@
 import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthService } from './auth.service';
+import { RedisModule } from '../redis/redis.module';
+import { UserActivityModule } from '../user-activity/user-activity.module';
+import { UserEntity } from '../users/entities/user.entity';
+
 import { AuthController } from './auth.controller';
-import { JwtStrategy } from './jwt.strategy';
+import { AuthService } from './auth.service';
+import { RolePermissionEntity } from './entities/role-permission.entity';
+import { RoleEntity } from './entities/role.entity';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
+import { JwtStrategy } from './jwt.strategy';
 import { PermissionsService } from './permissions.service';
-import { RoleEntity } from './entities/role.entity';
-import { RolePermissionEntity } from './entities/role-permission.entity';
-import { RedisModule } from '../redis/redis.module';
-import { UserEntity } from '../users/entities/user.entity';
-import { UserActivityModule } from '../user-activity/user-activity.module';
 
 @Module({
   imports: [

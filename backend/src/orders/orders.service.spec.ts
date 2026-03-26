@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { OrdersGateway } from './orders.gateway';
 import { OrdersService } from './orders.service';
 import { Order, BloodType, OrderStatus } from './types/order.types';
-import { OrdersGateway } from './orders.gateway';
 
 describe('OrdersService', () => {
   let service: OrdersService;

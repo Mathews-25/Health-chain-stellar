@@ -6,7 +6,9 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
+
 import { BloodRequestStatus } from '../enums/blood-request-status.enum';
+
 import { BloodRequestItemEntity } from './blood-request-item.entity';
 
 @Entity('blood_requests')
@@ -36,10 +38,20 @@ export class BloodRequestEntity {
   })
   status: BloodRequestStatus;
 
-  @Column({ name: 'blockchain_tx_hash', type: 'varchar', length: 256, nullable: true })
+  @Column({
+    name: 'blockchain_tx_hash',
+    type: 'varchar',
+    length: 256,
+    nullable: true,
+  })
   blockchainTxHash: string | null;
 
-  @Column({ name: 'created_by_user_id', type: 'varchar', length: 64, nullable: true })
+  @Column({
+    name: 'created_by_user_id',
+    type: 'varchar',
+    length: 64,
+    nullable: true,
+  })
   createdByUserId: string | null;
 
   @OneToMany(() => BloodRequestItemEntity, (item) => item.request, {

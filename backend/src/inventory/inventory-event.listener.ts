@@ -1,11 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
+
 import { InventoryLowEvent } from '../events/inventory-low.event';
+import { NotificationChannel } from '../notifications/enums/notification-channel.enum';
 import { NotificationsService } from '../notifications/notifications.service';
 import { UserEntity } from '../users/entities/user.entity';
-import { NotificationChannel } from '../notifications/enums/notification-channel.enum';
 
 @Injectable()
 export class InventoryEventListener {

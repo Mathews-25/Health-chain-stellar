@@ -1,8 +1,9 @@
-import { BloodUnit } from './blood-unit.entity';
-import { BloodStatusHistory } from './blood-status-history.entity';
-import { BloodType } from '../enums/blood-type.enum';
-import { BloodStatus } from '../enums/blood-status.enum';
 import { BloodComponent } from '../enums/blood-component.enum';
+import { BloodStatus } from '../enums/blood-status.enum';
+import { BloodType } from '../enums/blood-type.enum';
+
+import { BloodStatusHistory } from './blood-status-history.entity';
+import { BloodUnit } from './blood-unit.entity';
 
 describe('BloodType enum', () => {
   it('should contain all eight blood types', () => {

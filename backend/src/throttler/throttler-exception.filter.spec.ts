@@ -1,5 +1,6 @@
 import { ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { ThrottlerException } from '@nestjs/throttler';
+
 import { ThrottlerExceptionFilter } from './throttler-exception.filter';
 
 describe('ThrottlerExceptionFilter', () => {

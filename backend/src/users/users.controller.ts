@@ -10,9 +10,11 @@ import {
   HttpStatus,
   Request,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 import { Permission } from '../auth/enums/permission.enum';
+
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -39,7 +41,11 @@ export class UsersController {
 
   @RequirePermissions(Permission.MANAGE_USERS)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: any, @Request() req: any) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: any,
+    @Request() req: any,
+  ) {
     return this.usersService.update(id, updateUserDto, {
       actorId: req.user?.id,
       ipAddress: req.headers?.['x-forwarded-for'] ?? req.ip,

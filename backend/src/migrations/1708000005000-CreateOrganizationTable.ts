@@ -218,7 +218,10 @@ export class CreateOrganizationTable1708000005000 implements MigrationInterface 
       await queryRunner.dropColumn('users', 'organization_id');
     }
 
-    await queryRunner.dropIndex('organizations', 'IDX_ORGANIZATIONS_CITY_COUNTRY');
+    await queryRunner.dropIndex(
+      'organizations',
+      'IDX_ORGANIZATIONS_CITY_COUNTRY',
+    );
     await queryRunner.dropIndex('organizations', 'IDX_ORGANIZATIONS_LOCATION');
     await queryRunner.dropIndex(
       'organizations',

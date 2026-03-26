@@ -1,3 +1,4 @@
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -6,8 +7,9 @@ import {
   OnGatewayDisconnect,
   OnGatewayInit,
 } from '@nestjs/websockets';
+
 import { Server, Socket } from 'socket.io';
-import { Logger, UnauthorizedException } from '@nestjs/common';
+
 import { Order } from './types/order.types';
 
 @WebSocketGateway({

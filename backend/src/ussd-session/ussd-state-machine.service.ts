@@ -1,4 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
+
+import { UssdSessionStore } from './ussd-session.store';
 import {
   UssdSession,
   UssdStep,
@@ -6,7 +8,6 @@ import {
   BloodType,
   BloodBank,
 } from './ussd.types';
-import { UssdSessionStore } from './ussd-session.store';
 
 export const BLOOD_TYPES = Object.values(BloodType);
 export const BLOOD_BANKS: BloodBank[] = [

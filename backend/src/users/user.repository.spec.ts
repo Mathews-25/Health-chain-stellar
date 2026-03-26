@@ -1,7 +1,8 @@
-import { UserRepository } from '../user.repository';
-import { UserEntity } from '../entities/user.entity';
-import { UserRole } from '../../auth/enums/user-role.enum';
 import { DataSource, SelectQueryBuilder } from 'typeorm';
+
+import { UserRole } from '../../auth/enums/user-role.enum';
+import { UserEntity } from '../entities/user.entity';
+import { UserRepository } from '../user.repository';
 
 const mockUser = (overrides: Partial<UserEntity> = {}): UserEntity =>
   ({
@@ -65,7 +66,9 @@ describe('UserRepository', () => {
 
       const result = await repo.findByEmail('TEST@EXAMPLE.COM');
 
-      expect(findOneMock).toHaveBeenCalledWith({ where: { email: 'test@example.com' } });
+      expect(findOneMock).toHaveBeenCalledWith({
+        where: { email: 'test@example.com' },
+      });
       expect(result).toBe(user);
     });
 
@@ -94,7 +97,9 @@ describe('UserRepository', () => {
 
       const result = await repo.findByOrganization('org-1');
 
-      expect(findMock).toHaveBeenCalledWith({ where: { organizationId: 'org-1' } });
+      expect(findMock).toHaveBeenCalledWith({
+        where: { organizationId: 'org-1' },
+      });
       expect(result).toHaveLength(2);
     });
   });
@@ -116,7 +121,10 @@ describe('UserRepository', () => {
 
   describe('searchUsers', () => {
     it('applies search filter', async () => {
-      (qbMock.getManyAndCount as jest.Mock).mockResolvedValue([[mockUser()], 1]);
+      (qbMock.getManyAndCount as jest.Mock).mockResolvedValue([
+        [mockUser()],
+        1,
+      ]);
 
       const [users, count] = await repo.searchUsers({ search: 'john' });
 
@@ -130,21 +138,29 @@ describe('UserRepository', () => {
 
     it('applies role filter', async () => {
       await repo.searchUsers({ role: UserRole.DONOR });
-      expect(qbMock.andWhere).toHaveBeenCalledWith('user.role = :role', { role: UserRole.DONOR });
+      expect(qbMock.andWhere).toHaveBeenCalledWith('user.role = :role', {
+        role: UserRole.DONOR,
+      });
     });
 
     it('applies organizationId filter', async () => {
       await repo.searchUsers({ organizationId: 'org-1' });
-      expect(qbMock.andWhere).toHaveBeenCalledWith('user.organization_id = :organizationId', {
-        organizationId: 'org-1',
-      });
+      expect(qbMock.andWhere).toHaveBeenCalledWith(
+        'user.organization_id = :organizationId',
+        {
+          organizationId: 'org-1',
+        },
+      );
     });
 
     it('applies isActive filter', async () => {
       await repo.searchUsers({ isActive: false });
-      expect(qbMock.andWhere).toHaveBeenCalledWith('user.is_active = :isActive', {
-        isActive: false,
-      });
+      expect(qbMock.andWhere).toHaveBeenCalledWith(
+        'user.is_active = :isActive',
+        {
+          isActive: false,
+        },
+      );
     });
 
     it('uses default pagination', async () => {

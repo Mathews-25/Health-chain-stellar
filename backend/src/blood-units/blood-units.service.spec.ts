@@ -1,12 +1,15 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { BloodUnitsService } from './blood-units.service';
-import { BloodUnitTrail } from '../soroban/entities/blood-unit-trail.entity';
-import { BloodUnitEntity } from './entities/blood-unit.entity';
-import { SorobanService } from '../soroban/soroban.service';
-import { NotificationsService } from '../notifications/notifications.service';
-import { RegisterBloodUnitDto } from './dto/blood-units.dto';
+
 import * as QRCode from 'qrcode';
+import { Repository } from 'typeorm';
+
+import { NotificationsService } from '../notifications/notifications.service';
+import { BloodUnitTrail } from '../soroban/entities/blood-unit-trail.entity';
+import { SorobanService } from '../soroban/soroban.service';
+
+import { BloodUnitsService } from './blood-units.service';
+import { RegisterBloodUnitDto } from './dto/blood-units.dto';
+import { BloodUnitEntity } from './entities/blood-unit.entity';
 
 jest.mock('qrcode', () => ({
   toDataURL: jest.fn().mockResolvedValue('data:image/png;base64,MOCK_BARCODE'),
@@ -76,12 +79,14 @@ describe('BloodUnitsService', () => {
     (bloodUnitRepository.create as jest.Mock).mockImplementation(
       (input) => input as BloodUnitEntity,
     );
-    (bloodUnitRepository.save as jest.Mock).mockImplementation(async (input) => ({
-      id: 'db-unit-id',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...input,
-    }));
+    (bloodUnitRepository.save as jest.Mock).mockImplementation(
+      async (input) => ({
+        id: 'db-unit-id',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...input,
+      }),
+    );
     (notificationsService.send as jest.Mock).mockResolvedValue([]);
 
     const result = await service.registerBloodUnit(dto, {

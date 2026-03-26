@@ -1,6 +1,8 @@
 import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { Redis } from 'ioredis';
+
 import { REDIS_CLIENT } from '../redis/redis.constants';
 
 @Injectable()

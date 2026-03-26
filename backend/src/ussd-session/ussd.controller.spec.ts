@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { UssdController } from './ussd.controller';
-import { UssdService } from './ussd.service';
 import { UssdSessionDto } from './ussd.dto';
+import { UssdService } from './ussd.service';
 
 describe('UssdController', () => {
   let controller: UssdController;

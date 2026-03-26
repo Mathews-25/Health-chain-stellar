@@ -11,8 +11,10 @@ import {
   Patch,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import { RequirePermissions } from './decorators/require-permissions.decorator';
 import {
   ChangePasswordDto,
   LoginDto,
@@ -20,7 +22,6 @@ import {
   RegisterDto,
   UnlockAccountDto,
 } from './dto/auth.dto';
-import { RequirePermissions } from './decorators/require-permissions.decorator';
 import { Permission } from './enums/permission.enum';
 
 /** Stricter than global default (100/min) to reduce brute-force and abuse on auth. */
@@ -65,7 +66,10 @@ export class AuthController {
 
   @Delete('sessions/:sessionId')
   @HttpCode(HttpStatus.OK)
-  async revokeSession(@Request() req: any, @Param('sessionId') sessionId: string) {
+  async revokeSession(
+    @Request() req: any,
+    @Param('sessionId') sessionId: string,
+  ) {
     return this.authService.revokeSession(req.user.id, sessionId);
   }
 

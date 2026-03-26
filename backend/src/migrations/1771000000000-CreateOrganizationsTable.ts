@@ -18,7 +18,12 @@ export class CreateOrganizationsTable1771000000000 implements MigrationInterface
           { name: 'email', type: 'varchar', length: '255' },
           { name: 'phone', type: 'varchar', length: '32' },
           { name: 'address', type: 'text', isNullable: true },
-          { name: 'license_number', type: 'varchar', length: '100', isUnique: true },
+          {
+            name: 'license_number',
+            type: 'varchar',
+            length: '100',
+            isUnique: true,
+          },
           {
             name: 'status',
             type: 'varchar',
@@ -30,8 +35,18 @@ export class CreateOrganizationsTable1771000000000 implements MigrationInterface
           { name: 'rejection_reason', type: 'text', isNullable: true },
           { name: 'verified_at', type: 'timestamp', isNullable: true },
           { name: 'verified_by_user_id', type: 'uuid', isNullable: true },
-          { name: 'blockchain_tx_hash', type: 'varchar', length: '128', isNullable: true },
-          { name: 'blockchain_address', type: 'varchar', length: '128', isNullable: true },
+          {
+            name: 'blockchain_tx_hash',
+            type: 'varchar',
+            length: '128',
+            isNullable: true,
+          },
+          {
+            name: 'blockchain_address',
+            type: 'varchar',
+            length: '128',
+            isNullable: true,
+          },
           {
             name: 'created_at',
             type: 'timestamp',

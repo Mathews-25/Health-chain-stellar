@@ -1,9 +1,9 @@
+import { OrderStatus } from './enums/order-status.enum';
+import { OrderTransitionException } from './exceptions/order-transition.exception';
 import {
   OrderStateMachine,
   VALID_TRANSITIONS,
 } from './state-machine/order-state-machine';
-import { OrderStatus } from './enums/order-status.enum';
-import { OrderTransitionException } from './exceptions/order-transition.exception';
 
 describe('OrderStateMachine', () => {
   let sm: OrderStateMachine;

@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OrdersGateway } from './orders.gateway';
+
 import { Server, Socket } from 'socket.io';
+
+import { OrdersGateway } from './orders.gateway';
 import { Order, OrderStatus } from './types/order.types';
 
 describe('OrdersGateway', () => {

@@ -4,9 +4,11 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
+
 import { Observable, catchError, tap, throwError } from 'rxjs';
-import { UserActivityService } from '../user-activity.service';
+
 import { ActivityType } from '../enums/activity-type.enum';
+import { UserActivityService } from '../user-activity.service';
 
 @Injectable()
 export class ActivityLoggingInterceptor implements NestInterceptor {
@@ -27,7 +29,8 @@ export class ActivityLoggingInterceptor implements NestInterceptor {
       ip?: string;
     }>();
 
-    const path = request.route?.path ?? request.path ?? request.originalUrl ?? '';
+    const path =
+      request.route?.path ?? request.path ?? request.originalUrl ?? '';
     const activityType = this.mapSuccessActivity(request.method, path);
     const baseContext = this.getRequestContext(request);
 
@@ -50,7 +53,9 @@ export class ActivityLoggingInterceptor implements NestInterceptor {
           (path === '/login' || path.includes('/auth/login'))
         ) {
           const errorMessage =
-            error instanceof Error ? error.message : 'Unknown authentication error';
+            error instanceof Error
+              ? error.message
+              : 'Unknown authentication error';
           void this.userActivityService.logActivity({
             userId: null,
             activityType: ActivityType.AUTH_LOGIN_FAILED,
@@ -69,10 +74,16 @@ export class ActivityLoggingInterceptor implements NestInterceptor {
     method: string,
     path: string,
   ): ActivityType | undefined {
-    if (method === 'POST' && (path === '/login' || path.includes('/auth/login'))) {
+    if (
+      method === 'POST' &&
+      (path === '/login' || path.includes('/auth/login'))
+    ) {
       return ActivityType.AUTH_LOGIN_SUCCESS;
     }
-    if (method === 'POST' && (path === '/logout' || path.includes('/auth/logout'))) {
+    if (
+      method === 'POST' &&
+      (path === '/logout' || path.includes('/auth/logout'))
+    ) {
       return ActivityType.AUTH_LOGOUT;
     }
     if (
@@ -106,7 +117,7 @@ export class ActivityLoggingInterceptor implements NestInterceptor {
     const userAgent = request.headers?.['user-agent'];
     const resolvedIp = Array.isArray(forwardedFor)
       ? forwardedFor[0]
-      : forwardedFor?.split(',')[0]?.trim() ?? request.ip;
+      : (forwardedFor?.split(',')[0]?.trim() ?? request.ip);
 
     return {
       ipAddress: resolvedIp ?? null,

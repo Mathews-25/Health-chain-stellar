@@ -1,15 +1,17 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { Job } from 'bullmq';
 import { Repository } from 'typeorm';
+
 import { NotificationEntity } from '../entities/notification.entity';
-import { NotificationStatus } from '../enums/notification-status.enum';
 import { NotificationChannel } from '../enums/notification-channel.enum';
-import { SmsProvider } from '../providers/sms.provider';
-import { PushProvider } from '../providers/push.provider';
+import { NotificationStatus } from '../enums/notification-status.enum';
 import { EmailProvider } from '../providers/email.provider';
 import { InAppProvider } from '../providers/in-app.provider';
+import { PushProvider } from '../providers/push.provider';
+import { SmsProvider } from '../providers/sms.provider';
 
 export interface NotificationJobData {
   notificationId: string;

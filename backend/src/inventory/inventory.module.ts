@@ -1,18 +1,19 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bullmq';
-import { ScheduleModule } from '@nestjs/schedule';
+import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { InventoryService } from './inventory.service';
-import { InventoryController } from './inventory.controller';
-import { InventoryForecastingService } from './inventory-forecasting.service';
-import { InventoryEventListener } from './inventory-event.listener';
-import { DonorOutreachProcessor } from './processors/donor-outreach.processor';
-import { OrderEntity } from '../orders/entities/order.entity';
-import { InventoryEntity } from './entities/inventory.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { OrderEntity } from '../orders/entities/order.entity';
 import { UsersModule } from '../users/users.module';
+
+import { InventoryEntity } from './entities/inventory.entity';
+import { InventoryEventListener } from './inventory-event.listener';
+import { InventoryForecastingService } from './inventory-forecasting.service';
+import { InventoryController } from './inventory.controller';
+import { InventoryService } from './inventory.service';
+import { DonorOutreachProcessor } from './processors/donor-outreach.processor';
 
 @Module({
   imports: [

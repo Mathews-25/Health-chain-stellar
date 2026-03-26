@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
+
 import { InventoryEntity } from '../entities/inventory.entity';
 
 export interface StockAggregation {

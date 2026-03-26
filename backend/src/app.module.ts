@@ -1,36 +1,38 @@
+import { BullModule as BullClassicModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
-import type Redis from 'ioredis';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { HospitalsModule } from './hospitals/hospitals.module';
-import { InventoryModule } from './inventory/inventory.module';
-import { OrdersModule } from './orders/orders.module';
-import { RidersModule } from './riders/riders.module';
-import { DispatchModule } from './dispatch/dispatch.module';
-import { MapsModule } from './maps/maps.module';
-import { NotificationsModule } from './notifications/notifications.module';
-import { OrganizationsModule } from './organizations/organizations.module';
-import { BloodRequestsModule } from './blood-requests/blood-requests.module';
-import { BlockchainModule } from './blockchain/blockchain.module';
-import { BloodUnitsModule } from './blood-units/blood-units.module';
-import { BullModule } from '@nestjs/bullmq';
-import { BullModule as BullClassicModule } from '@nestjs/bull';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from './auth/guards/permissions.guard';
-import { ScheduleModule } from '@nestjs/schedule';
-import { UserActivityModule } from './user-activity/user-activity.module';
-import { ActivityLoggingInterceptor } from './user-activity/interceptors/activity-logging.interceptor';
-import { RedisModule } from './redis/redis.module';
+import { BlockchainModule } from './blockchain/blockchain.module';
+import { BloodRequestsModule } from './blood-requests/blood-requests.module';
+import { BloodUnitsModule } from './blood-units/blood-units.module';
+import { DispatchModule } from './dispatch/dispatch.module';
+import { HospitalsModule } from './hospitals/hospitals.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { MapsModule } from './maps/maps.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { OrdersModule } from './orders/orders.module';
+import { OrganizationsModule } from './organizations/organizations.module';
 import { REDIS_CLIENT } from './redis/redis.constants';
+import { RedisModule } from './redis/redis.module';
+import { RidersModule } from './riders/riders.module';
 import { throttleGetTracker } from './throttler/throttle-tracker.util';
+import { ActivityLoggingInterceptor } from './user-activity/interceptors/activity-logging.interceptor';
+import { UserActivityModule } from './user-activity/user-activity.module';
+import { UsersModule } from './users/users.module';
+
+import type Redis from 'ioredis';
 
 @Module({
   imports: [
@@ -70,10 +72,11 @@ import { throttleGetTracker } from './throttler/throttle-tracker.util';
               limit: 100,
             },
           ],
-          ...(useRedis ? { storage: new ThrottlerStorageRedisService(redis) } : {}),
+          ...(useRedis
+            ? { storage: new ThrottlerStorageRedisService(redis) }
+            : {}),
           getTracker: throttleGetTracker,
-          errorMessage:
-            'Rate limit exceeded. Please try again later.',
+          errorMessage: 'Rate limit exceeded. Please try again later.',
         };
       },
     }),

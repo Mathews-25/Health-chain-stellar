@@ -5,21 +5,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import { OrderStateMachine } from './state-machine/order-state-machine';
-import { OrderEventStoreService } from './services/order-event-store.service';
-import { OrdersGateway } from './gateways/orders.gateway';
-import { OrderEntity } from './entities/order.entity';
-import { OrderEventEntity } from './entities/order-event.entity';
-import { OrderStatus } from './enums/order-status.enum';
-import { OrderEventType } from './enums/order-event-type.enum';
-import { Order, BloodType } from './types/order.types';
-import type { OrderStatus as OrderStatusType } from './types/order.types';
-import { OrderQueryParamsDto } from './dto/order-query-params.dto';
-import { OrdersResponseDto } from './dto/orders-response.dto';
+import { Repository } from 'typeorm';
+
 import {
   OrderConfirmedEvent,
   OrderCancelledEvent,
@@ -32,6 +22,19 @@ import {
   OrderResolvedEvent,
 } from '../events';
 import { InventoryService } from '../inventory/inventory.service';
+
+import { OrderQueryParamsDto } from './dto/order-query-params.dto';
+import { OrdersResponseDto } from './dto/orders-response.dto';
+import { OrderEventEntity } from './entities/order-event.entity';
+import { OrderEntity } from './entities/order.entity';
+import { OrderEventType } from './enums/order-event-type.enum';
+import { OrderStatus } from './enums/order-status.enum';
+import { OrdersGateway } from './gateways/orders.gateway';
+import { OrderEventStoreService } from './services/order-event-store.service';
+import { OrderStateMachine } from './state-machine/order-state-machine';
+import { Order, BloodType } from './types/order.types';
+
+import type { OrderStatus as OrderStatusType } from './types/order.types';
 
 /** Maps each terminal OrderStatus to its corresponding event-store type. */
 const STATUS_TO_EVENT_TYPE: Record<OrderStatus, OrderEventType> = {

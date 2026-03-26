@@ -1,8 +1,9 @@
 /// <reference types="jest" />
-import { Test, TestingModule } from '@nestjs/testing';
 import { getQueueToken } from '@nestjs/bull';
-import { SorobanService } from '../services/soroban.service';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { IdempotencyService } from '../services/idempotency.service';
+import { SorobanService } from '../services/soroban.service';
 import { SorobanTxJob } from '../types/soroban-tx.types';
 
 describe('SorobanService', () => {

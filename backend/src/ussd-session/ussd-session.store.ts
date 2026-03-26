@@ -1,7 +1,10 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
+
 import { Redis } from 'ioredis';
-import { UssdSession, UssdStep } from './ussd.types';
+
 import { REDIS_CLIENT } from '../redis/redis.constants';
+
+import { UssdSession, UssdStep } from './ussd.types';
 
 export { REDIS_CLIENT } from '../redis/redis.constants';
 export const USSD_SESSION_TTL_SECONDS = 120; // Africa's Talking default session timeout

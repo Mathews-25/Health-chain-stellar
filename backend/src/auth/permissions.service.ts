@@ -1,14 +1,17 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+
 import Redis from 'ioredis';
+import { Repository } from 'typeorm';
+
 import { REDIS_CLIENT } from '../redis/redis.constants';
-import { RoleEntity } from './entities/role.entity';
+import { ActivityType } from '../user-activity/enums/activity-type.enum';
+import { UserActivityService } from '../user-activity/user-activity.service';
+
 import { RolePermissionEntity } from './entities/role-permission.entity';
+import { RoleEntity } from './entities/role.entity';
 import { Permission } from './enums/permission.enum';
 import { UserRole } from './enums/user-role.enum';
-import { UserActivityService } from '../user-activity/user-activity.service';
-import { ActivityType } from '../user-activity/enums/activity-type.enum';
 
 /** Redis TTL for role-permission entries (5 minutes) */
 const CACHE_TTL_SECONDS = 300;

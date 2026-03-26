@@ -1,8 +1,11 @@
-import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { UserEntity } from './entities/user.entity';
+
+import { DataSource, Repository } from 'typeorm';
+
 import { UserRole } from '../auth/enums/user-role.enum';
+
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
@@ -15,7 +18,10 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   findByEmailWithDeleted(email: string): Promise<UserEntity | null> {
-    return this.findOne({ where: { email: email.toLowerCase() }, withDeleted: true });
+    return this.findOne({
+      where: { email: email.toLowerCase() },
+      withDeleted: true,
+    });
   }
 
   findByOrganization(organizationId: string): Promise<UserEntity[]> {
@@ -23,7 +29,10 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   findWithTwoFactorAuth(userId: string): Promise<UserEntity | null> {
-    return this.findOne({ where: { id: userId }, relations: ['twoFactorAuth'] });
+    return this.findOne({
+      where: { id: userId },
+      relations: ['twoFactorAuth'],
+    });
   }
 
   async searchUsers(query: {

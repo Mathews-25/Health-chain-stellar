@@ -9,7 +9,12 @@ import {
   HttpStatus,
   ParseIntPipe,
 } from '@nestjs/common';
+
 import { Request } from 'express';
+
+import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
+import { Permission } from '../auth/enums/permission.enum';
+
 import { BloodUnitsService } from './blood-units.service';
 import {
   BulkRegisterBloodUnitsDto,
@@ -17,8 +22,6 @@ import {
   TransferCustodyDto,
   LogTemperatureDto,
 } from './dto/blood-units.dto';
-import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
-import { Permission } from '../auth/enums/permission.enum';
 
 @Controller('blood-units')
 export class BloodUnitsController {

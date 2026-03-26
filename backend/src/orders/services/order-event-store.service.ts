@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
+
 import { OrderEventEntity } from '../entities/order-event.entity';
 import { OrderEventType } from '../enums/order-event-type.enum';
 import { OrderStatus } from '../enums/order-status.enum';

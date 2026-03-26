@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+
 import { RateLimitExceededException } from './rate-limit-exceeded.exception';
 
 describe('RateLimitExceededException', () => {

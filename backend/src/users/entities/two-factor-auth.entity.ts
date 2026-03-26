@@ -8,6 +8,7 @@ import {
   JoinColumn,
   BaseEntity,
 } from 'typeorm';
+
 import { UserEntity } from './user.entity';
 
 @Entity('two_factor_auth')
@@ -27,7 +28,9 @@ export class TwoFactorAuthEntity extends BaseEntity {
   @Column({ name: 'backup_codes', type: 'simple-array', nullable: true })
   backupCodes?: string[] | null;
 
-  @OneToOne(() => UserEntity, (user) => user.twoFactorAuth, { onDelete: 'CASCADE' })
+  @OneToOne(() => UserEntity, (user) => user.twoFactorAuth, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 

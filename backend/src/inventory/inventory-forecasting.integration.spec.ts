@@ -1,8 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
+import { getQueueToken } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getQueueToken } from '@nestjs/bullmq';
+import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
+
 import {
   Repository,
   Entity,
@@ -12,11 +13,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { InventoryForecastingService } from './inventory-forecasting.service';
-import { InventoryEntity } from './entities/inventory.entity';
-import { UserEntity } from '../users/entities/user.entity';
 import { OrderEntity } from '../orders/entities/order.entity';
 import { OrderStatus } from '../orders/enums/order-status.enum';
+import { UserEntity } from '../users/entities/user.entity';
+
+import { InventoryEntity } from './entities/inventory.entity';
+import { InventoryForecastingService } from './inventory-forecasting.service';
 
 // Test-specific entity to avoid enum issues with SQLite
 @Entity('orders')

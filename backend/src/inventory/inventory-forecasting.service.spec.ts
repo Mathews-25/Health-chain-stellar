@@ -1,14 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { getQueueToken } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { getQueueToken } from '@nestjs/bullmq';
+
 import { Repository, MoreThanOrEqual } from 'typeorm';
 
-import { InventoryForecastingService } from './inventory-forecasting.service';
-import { OrderEntity } from '../orders/entities/order.entity';
-import { InventoryEntity } from './entities/inventory.entity';
 import { InventoryLowEvent } from '../events/inventory-low.event';
+import { OrderEntity } from '../orders/entities/order.entity';
+
+import { InventoryEntity } from './entities/inventory.entity';
+import { InventoryForecastingService } from './inventory-forecasting.service';
 
 describe('InventoryForecastingService', () => {
   let service: InventoryForecastingService;

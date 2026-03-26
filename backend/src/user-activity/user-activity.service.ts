@@ -1,10 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Between, LessThan, Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Between, LessThan, Repository } from 'typeorm';
+
+import { ActivityQueryDto } from './dto/activity-query.dto';
 import { UserActivityEntity } from './entities/user-activity.entity';
 import { ActivityType } from './enums/activity-type.enum';
-import { ActivityQueryDto } from './dto/activity-query.dto';
 
 export interface ActivityRequestContext {
   ipAddress?: string | null;
@@ -102,14 +104,18 @@ export class UserActivityService {
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async cleanupOldActivities(): Promise<number> {
     const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - UserActivityService.RETENTION_DAYS);
+    cutoffDate.setDate(
+      cutoffDate.getDate() - UserActivityService.RETENTION_DAYS,
+    );
 
     const result = await this.activityRepository.delete({
       createdAt: LessThan(cutoffDate),
     });
     const deleted = result.affected ?? 0;
     if (deleted > 0) {
-      this.logger.log(`Deleted ${deleted} user activity rows older than 90 days`);
+      this.logger.log(
+        `Deleted ${deleted} user activity rows older than 90 days`,
+      );
     }
     return deleted;
   }

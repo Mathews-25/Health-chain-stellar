@@ -11,13 +11,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+
 import { memoryStorage } from 'multer';
-import { OrganizationsService } from './organizations.service';
-import { RegisterOrganizationDto } from './dto/register-organization.dto';
-import { RejectOrganizationDto } from './dto/reject-organization.dto';
+
 import { Public } from '../auth/decorators/public.decorator';
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 import { Permission } from '../auth/enums/permission.enum';
+
+import { RegisterOrganizationDto } from './dto/register-organization.dto';
+import { RejectOrganizationDto } from './dto/reject-organization.dto';
+import { OrganizationsService } from './organizations.service';
 
 @Controller('organizations')
 export class OrganizationsController {

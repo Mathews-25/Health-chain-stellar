@@ -1,11 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { OrderConfirmedEvent } from '../events';
+import { MapsService } from '../maps/maps.service';
+import { RidersService } from '../riders/riders.service';
+
 import { DispatchService } from './dispatch.service';
 import { RiderAssignmentService } from './rider-assignment.service';
-import { OrderConfirmedEvent } from '../events';
-import { RidersService } from '../riders/riders.service';
-import { MapsService } from '../maps/maps.service';
-import { ConfigService } from '@nestjs/config';
 
 describe('DispatchService Integration Tests', () => {
   let dispatchService: DispatchService;

@@ -6,10 +6,15 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+
 import * as QRCode from 'qrcode';
-import { SorobanService } from '../soroban/soroban.service';
+import { Repository } from 'typeorm';
+
+import { NotificationChannel } from '../notifications/enums/notification-channel.enum';
+import { NotificationsService } from '../notifications/notifications.service';
 import { BloodUnitTrail } from '../soroban/entities/blood-unit-trail.entity';
+import { SorobanService } from '../soroban/soroban.service';
+
 import {
   BulkRegisterBloodUnitsDto,
   RegisterBloodUnitDto,
@@ -17,8 +22,6 @@ import {
   LogTemperatureDto,
 } from './dto/blood-units.dto';
 import { BloodUnitEntity } from './entities/blood-unit.entity';
-import { NotificationsService } from '../notifications/notifications.service';
-import { NotificationChannel } from '../notifications/enums/notification-channel.enum';
 
 interface AuthenticatedUserContext {
   id: string;

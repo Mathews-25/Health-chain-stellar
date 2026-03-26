@@ -26,7 +26,8 @@ export class RegisterOrganizationDto {
   @MinLength(10)
   @MaxLength(20)
   @Matches(/^\+?[0-9\s-]{10,20}$/, {
-    message: 'phone must be 10–20 characters (digits, optional +, spaces, hyphen)',
+    message:
+      'phone must be 10–20 characters (digits, optional +, spaces, hyphen)',
   })
   phone: string;
 

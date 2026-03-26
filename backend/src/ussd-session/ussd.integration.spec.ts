@@ -5,13 +5,14 @@
  * (Redis mock) to verify multi-step navigation works correctly end-to-end.
  */
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { UssdSessionStore, REDIS_CLIENT } from './ussd-session.store';
 import {
   UssdStateMachine,
   BLOOD_TYPES,
   VALID_QUANTITIES,
   BLOOD_BANKS,
 } from './ussd-state-machine.service';
-import { UssdSessionStore, REDIS_CLIENT } from './ussd-session.store';
 import { UssdSession, UssdStep } from './ussd.types';
 
 /** In-memory Redis shim so integration tests don't need a real Redis instance */

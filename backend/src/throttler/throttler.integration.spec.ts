@@ -2,6 +2,7 @@ import { Controller, Get, INestApplication } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+
 import request from 'supertest';
 
 @Controller('throttle-test')
@@ -40,14 +41,18 @@ describe('ThrottlerModule (in-memory)', () => {
   });
 
   it('returns 429 when exceeded; successful responses include rate limit headers', async () => {
-    const first = await request(app.getHttpServer()).get('/throttle-test').expect(200);
+    const first = await request(app.getHttpServer())
+      .get('/throttle-test')
+      .expect(200);
     expect(first.headers['x-ratelimit-limit']).toBe('2');
     expect(first.headers['x-ratelimit-remaining']).toBeDefined();
     expect(first.headers['x-ratelimit-reset']).toBeDefined();
 
     await request(app.getHttpServer()).get('/throttle-test').expect(200);
 
-    const blocked = await request(app.getHttpServer()).get('/throttle-test').expect(429);
+    const blocked = await request(app.getHttpServer())
+      .get('/throttle-test')
+      .expect(429);
     expect(blocked.headers['retry-after']).toBeDefined();
   });
 });

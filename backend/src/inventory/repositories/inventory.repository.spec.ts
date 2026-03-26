@@ -1,8 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { InventoryRepository } from './inventory.repository';
+
 import { InventoryEntity } from '../entities/inventory.entity';
+
+import { InventoryRepository } from './inventory.repository';
 
 describe('InventoryRepository', () => {
   let repository: InventoryRepository;

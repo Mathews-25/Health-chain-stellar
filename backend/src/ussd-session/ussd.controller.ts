@@ -9,11 +9,13 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import type { Response } from 'express';
-import { UssdService } from './ussd.service';
-import { UssdSessionDto } from './ussd.dto';
-import { UssdRequest } from './ussd.types';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { UssdSessionDto } from './ussd.dto';
+import { UssdService } from './ussd.service';
+import { UssdRequest } from './ussd.types';
+
+import type { Response } from 'express';
 
 @ApiTags('USSD')
 @Controller('ussd')

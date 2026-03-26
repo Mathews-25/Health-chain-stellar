@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+
 import {
   OrderConfirmedEvent,
   OrderCancelledEvent,
@@ -7,8 +8,8 @@ import {
   OrderDispatchedEvent,
   OrderDeliveredEvent,
 } from '../../events';
-import { NotificationsService } from '../notifications.service';
 import { NotificationChannel } from '../enums/notification-channel.enum';
+import { NotificationsService } from '../notifications.service';
 
 /**
  * Event-driven notification listener for order-related events.

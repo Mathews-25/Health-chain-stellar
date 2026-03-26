@@ -1,13 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { UnauthorizedException } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+
 import Redis from 'ioredis';
 import RedisMock from 'ioredis-mock';
-import { AuthService } from './auth.service';
+
 import { REDIS_CLIENT } from '../redis/redis.constants';
-import { UnauthorizedException } from '@nestjs/common';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../users/entities/user.entity';
+
+import { AuthService } from './auth.service';
 import { hashPassword } from './utils/password.util';
 
 describe('AuthService - Refresh Token Race Condition (Integration)', () => {

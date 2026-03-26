@@ -11,8 +11,10 @@ import {
   Index,
   BaseEntity,
 } from 'typeorm';
+
 import { UserRole } from '../../auth/enums/user-role.enum';
 import { OrganizationEntity } from '../../organizations/entities/organization.entity';
+
 import { TwoFactorAuthEntity } from './two-factor-auth.entity';
 
 @Entity('users')

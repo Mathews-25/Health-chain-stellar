@@ -5,6 +5,7 @@ import {
   Index,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { ActivityType } from '../enums/activity-type.enum';
 
 @Entity('user_activities')

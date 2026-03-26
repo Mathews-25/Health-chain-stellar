@@ -6,8 +6,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
-import { Server } from 'socket.io';
+
+import { Socket, Server } from 'socket.io';
 import { RedisLocationRepository } from 'src/redis/redis-location.repository';
 import { calculateDistance } from 'src/tracking/geofence.util';
 

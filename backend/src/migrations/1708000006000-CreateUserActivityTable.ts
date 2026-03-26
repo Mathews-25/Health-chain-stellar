@@ -83,9 +83,18 @@ export class CreateUserActivityTable1708000006000 implements MigrationInterface 
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropIndex('user_activities', 'IDX_USER_ACTIVITY_USER_TYPE_CREATED_AT');
-    await queryRunner.dropIndex('user_activities', 'IDX_USER_ACTIVITY_CREATED_AT');
-    await queryRunner.dropIndex('user_activities', 'IDX_USER_ACTIVITY_ACTIVITY_TYPE');
+    await queryRunner.dropIndex(
+      'user_activities',
+      'IDX_USER_ACTIVITY_USER_TYPE_CREATED_AT',
+    );
+    await queryRunner.dropIndex(
+      'user_activities',
+      'IDX_USER_ACTIVITY_CREATED_AT',
+    );
+    await queryRunner.dropIndex(
+      'user_activities',
+      'IDX_USER_ACTIVITY_ACTIVITY_TYPE',
+    );
     await queryRunner.dropIndex('user_activities', 'IDX_USER_ACTIVITY_USER_ID');
     await queryRunner.dropTable('user_activities');
   }

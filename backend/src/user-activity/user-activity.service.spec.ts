@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
-import { UserActivityService } from './user-activity.service';
+
 import { UserActivityEntity } from './entities/user-activity.entity';
 import { ActivityType } from './enums/activity-type.enum';
+import { UserActivityService } from './user-activity.service';
 
 describe('UserActivityService', () => {
   let service: UserActivityService;

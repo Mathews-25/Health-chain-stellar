@@ -1,7 +1,8 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import type { Job } from 'bull';
+
 import type { SorobanTxJob } from '../types/soroban-tx.types';
+import type { Job } from 'bull';
 
 @Processor('soroban-tx-queue')
 export class SorobanTxProcessor {

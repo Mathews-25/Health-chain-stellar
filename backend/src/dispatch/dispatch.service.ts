@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { OnEvent, EventEmitter2 } from '@nestjs/event-emitter';
+
 import {
   OrderCancelledEvent,
   OrderStatusUpdatedEvent,
   OrderRiderAssignedEvent,
 } from '../events';
+
 import { RiderAssignmentService } from './rider-assignment.service';
 
 @Injectable()

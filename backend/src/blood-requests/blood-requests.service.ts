@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 import {
   BadRequestException,
   ForbiddenException,
@@ -6,16 +8,18 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
-import { randomBytes } from 'crypto';
-import { BloodRequestEntity } from './entities/blood-request.entity';
-import { BloodRequestItemEntity } from './entities/blood-request-item.entity';
-import { BloodRequestStatus } from './enums/blood-request-status.enum';
-import { CreateBloodRequestDto } from './dto/create-blood-request.dto';
-import { InventoryService } from '../inventory/inventory.service';
-import { SorobanService } from '../blockchain/services/soroban.service';
-import { EmailProvider } from '../notifications/providers/email.provider';
+
 import { UserRole } from '../auth/enums/user-role.enum';
+import { SorobanService } from '../blockchain/services/soroban.service';
+import { InventoryService } from '../inventory/inventory.service';
+import { EmailProvider } from '../notifications/providers/email.provider';
+
+import { CreateBloodRequestDto } from './dto/create-blood-request.dto';
+import { BloodRequestItemEntity } from './entities/blood-request-item.entity';
+import { BloodRequestEntity } from './entities/blood-request.entity';
+import { BloodRequestStatus } from './enums/blood-request-status.enum';
 
 type RequestUser = { id: string; role: string; email: string };
 
@@ -33,7 +37,10 @@ export class BloodRequestsService {
     private readonly emailProvider: EmailProvider,
   ) {}
 
-  private assertHospitalAuthorization(user: RequestUser, hospitalId: string): void {
+  private assertHospitalAuthorization(
+    user: RequestUser,
+    hospitalId: string,
+  ): void {
     if (user.role === UserRole.HOSPITAL && user.id !== hospitalId) {
       throw new ForbiddenException(
         'Hospital accounts may only create blood requests where hospitalId matches their user id.',
@@ -44,7 +51,9 @@ export class BloodRequestsService {
   private assertRequiredByFuture(requiredByIso: string): Date {
     const requiredBy = new Date(requiredByIso);
     if (Number.isNaN(requiredBy.getTime())) {
-      throw new BadRequestException('requiredBy must be a valid ISO 8601 date-time');
+      throw new BadRequestException(
+        'requiredBy must be a valid ISO 8601 date-time',
+      );
     }
     if (requiredBy.getTime() <= Date.now()) {
       throw new BadRequestException('requiredBy must be in the future');
@@ -67,7 +76,11 @@ export class BloodRequestsService {
   }
 
   private async releaseReservations(
-    reserved: Array<{ bloodBankId: string; bloodType: string; quantity: number }>,
+    reserved: Array<{
+      bloodBankId: string;
+      bloodType: string;
+      quantity: number;
+    }>,
   ): Promise<void> {
     for (const r of reserved.reverse()) {
       await this.inventoryService.releaseStockByBankAndType(
@@ -87,8 +100,11 @@ export class BloodRequestsService {
 
     const requestNumber = await this.allocateRequestNumber();
 
-    const reserved: Array<{ bloodBankId: string; bloodType: string; quantity: number }> =
-      [];
+    const reserved: Array<{
+      bloodBankId: string;
+      bloodType: string;
+      quantity: number;
+    }> = [];
 
     try {
       for (const item of dto.items) {
@@ -121,7 +137,10 @@ export class BloodRequestsService {
         });
         transactionHash = chainResult.transactionHash;
       } catch (err) {
-        this.logger.error(`Soroban create_blood_request failed for ${requestNumber}`, err);
+        this.logger.error(
+          `Soroban create_blood_request failed for ${requestNumber}`,
+          err,
+        );
         throw new UnprocessableEntityException(
           'Blood request could not be registered on-chain. Inventory reservations were rolled back.',
         );
@@ -159,7 +178,10 @@ export class BloodRequestsService {
     }
   }
 
-  private async sendCreationEmail(to: string, request: BloodRequestEntity): Promise<void> {
+  private async sendCreationEmail(
+    to: string,
+    request: BloodRequestEntity,
+  ): Promise<void> {
     const lines = request.items
       .map(
         (i) =>

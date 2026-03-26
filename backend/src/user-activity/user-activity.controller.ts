@@ -1,8 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { UserActivityService } from './user-activity.service';
-import { ActivityQueryDto } from './dto/activity-query.dto';
+
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 import { Permission } from '../auth/enums/permission.enum';
+
+import { ActivityQueryDto } from './dto/activity-query.dto';
+import { UserActivityService } from './user-activity.service';
 
 @Controller('activity-logs')
 export class UserActivityController {

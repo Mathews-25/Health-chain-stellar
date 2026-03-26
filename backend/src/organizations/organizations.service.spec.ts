@@ -1,13 +1,15 @@
 /// <reference types="jest" />
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ConflictException, NotFoundException } from '@nestjs/common';
-import { OrganizationsService } from './organizations.service';
+
+import { SorobanService } from '../blockchain/services/soroban.service';
+import { EmailProvider } from '../notifications/providers/email.provider';
+
 import { OrganizationEntity } from './entities/organization.entity';
 import { OrganizationVerificationStatus } from './enums/organization-verification-status.enum';
-import { EmailProvider } from '../notifications/providers/email.provider';
-import { SorobanService } from '../blockchain/services/soroban.service';
-import { ConfigService } from '@nestjs/config';
+import { OrganizationsService } from './organizations.service';
 
 describe('OrganizationsService', () => {
   let service: OrganizationsService;
@@ -116,7 +118,7 @@ describe('OrganizationsService', () => {
       repo.findOne.mockResolvedValueOnce(pending);
       repo.save.mockImplementation(async (e) => e);
 
-      const result = await service.approve(pending.id!, 'admin-uuid');
+      const result = await service.approve(pending.id, 'admin-uuid');
 
       expect(soroban.submitTransactionAndWait).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -138,7 +140,7 @@ describe('OrganizationsService', () => {
       repo.save.mockImplementation(async (e) => e);
 
       const result = await service.reject(
-        pending.id!,
+        pending.id,
         { reason: 'Incomplete documentation' },
         'admin-uuid',
       );

@@ -1,17 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import {
   BadRequestException,
   ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common';
-import Redis from 'ioredis';
-import { AuthService } from './auth.service';
-import { REDIS_CLIENT } from '../redis/redis.constants';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserEntity } from '../users/entities/user.entity';
+
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
+
+import { REDIS_CLIENT } from '../redis/redis.constants';
+import { UserEntity } from '../users/entities/user.entity';
+
+import { AuthService } from './auth.service';
 import { hashPassword } from './utils/password.util';
 
 describe('AuthService', () => {
@@ -130,10 +133,15 @@ describe('AuthService', () => {
         lockedUntil: null,
       } as UserEntity;
       (userRepository.findOne as jest.Mock).mockResolvedValue(user);
-      (userRepository.save as jest.Mock).mockImplementation(async (entity) => entity);
+      (userRepository.save as jest.Mock).mockImplementation(
+        async (entity) => entity,
+      );
 
       await expect(
-        service.login({ email: 'test@example.com', password: 'wrong-password' }),
+        service.login({
+          email: 'test@example.com',
+          password: 'wrong-password',
+        }),
       ).rejects.toThrow(UnauthorizedException);
 
       expect(user.failedLoginAttempts).toBe(5);
@@ -150,7 +158,9 @@ describe('AuthService', () => {
         lockedUntil: new Date(Date.now() - 60_000),
       } as UserEntity;
       (userRepository.findOne as jest.Mock).mockResolvedValue(user);
-      (userRepository.save as jest.Mock).mockImplementation(async (entity) => entity);
+      (userRepository.save as jest.Mock).mockImplementation(
+        async (entity) => entity,
+      );
       mockJwtService.sign.mockReturnValueOnce('access-token');
       mockJwtService.sign.mockReturnValueOnce('refresh-token');
 
@@ -281,7 +291,11 @@ describe('AuthService', () => {
       (userRepository.findOne as jest.Mock).mockResolvedValue(user);
 
       await expect(
-        service.changePassword('user-123', 'NewerPassword123', 'OldPassword123'),
+        service.changePassword(
+          'user-123',
+          'NewerPassword123',
+          'OldPassword123',
+        ),
       ).rejects.toThrow(BadRequestException);
     });
   });

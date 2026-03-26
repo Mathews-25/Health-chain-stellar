@@ -10,9 +10,11 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { RidersService } from './riders.service';
+
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 import { Permission } from '../auth/enums/permission.enum';
+
+import { RidersService } from './riders.service';
 
 @Controller('riders')
 export class RidersController {

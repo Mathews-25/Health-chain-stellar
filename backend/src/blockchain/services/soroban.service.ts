@@ -1,12 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
-import type { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
-import { IdempotencyService } from './idempotency.service';
+import { Injectable, Logger } from '@nestjs/common';
+
 import {
   SorobanTxJob,
   SorobanTxResult,
   QueueMetrics,
 } from '../types/soroban-tx.types';
+
+import { IdempotencyService } from './idempotency.service';
+
+import type { Queue } from 'bull';
 
 @Injectable()
 export class SorobanService {
@@ -85,9 +88,7 @@ export class SorobanService {
       setTimeout(
         () =>
           reject(
-            new Error(
-              `Soroban job ${jobId} timed out after ${timeoutMs}ms`,
-            ),
+            new Error(`Soroban job ${jobId} timed out after ${timeoutMs}ms`),
           ),
         timeoutMs,
       ),

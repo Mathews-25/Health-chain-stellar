@@ -1,3 +1,6 @@
+import { mkdir, writeFile } from 'fs/promises';
+import { join } from 'path';
+
 import {
   BadRequestException,
   ConflictException,
@@ -8,15 +11,16 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
-import { mkdir, writeFile } from 'fs/promises';
-import { join } from 'path';
-import { OrganizationEntity } from './entities/organization.entity';
-import { OrganizationVerificationStatus } from './enums/organization-verification-status.enum';
+
+import { SorobanService } from '../blockchain/services/soroban.service';
+import { EmailProvider } from '../notifications/providers/email.provider';
+
 import { RegisterOrganizationDto } from './dto/register-organization.dto';
 import { RejectOrganizationDto } from './dto/reject-organization.dto';
-import { EmailProvider } from '../notifications/providers/email.provider';
-import { SorobanService } from '../blockchain/services/soroban.service';
+import { OrganizationEntity } from './entities/organization.entity';
+import { OrganizationVerificationStatus } from './enums/organization-verification-status.enum';
 
 const ALLOWED_MIME = new Set([
   'application/pdf',
@@ -103,7 +107,10 @@ export class OrganizationsService {
       certificateDocument?: Express.Multer.File[];
     },
   ): Promise<{ message: string; data: OrganizationEntity }> {
-    const license = this.assertFile(files.licenseDocument?.[0], 'licenseDocument');
+    const license = this.assertFile(
+      files.licenseDocument?.[0],
+      'licenseDocument',
+    );
     const certificate = this.assertFile(
       files.certificateDocument?.[0],
       'certificateDocument',
@@ -114,7 +121,8 @@ export class OrganizationsService {
     });
     if (existing) {
       throw new ConflictException({
-        message: 'An organization with this license number is already registered',
+        message:
+          'An organization with this license number is already registered',
         field: 'licenseNumber',
       });
     }

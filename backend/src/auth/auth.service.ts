@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 import {
   Injectable,
   UnauthorizedException,
@@ -8,15 +10,17 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from './jwt.strategy';
-import Redis from 'ioredis';
-import { REDIS_CLIENT } from '../redis/redis.constants';
-import { randomBytes } from 'crypto';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
+
+import { REDIS_CLIENT } from '../redis/redis.constants';
 import { UserEntity } from '../users/entities/user.entity';
+
+import { JwtPayload } from './jwt.strategy';
 import { hashPassword, verifyPassword } from './utils/password.util';
 
 const MAX_FAILED_LOGIN_ATTEMPTS = 5;
@@ -35,7 +39,10 @@ export class AuthService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<UserEntity | null> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserEntity | null> {
     const user = await this.userRepository.findOne({
       where: { email: email.toLowerCase() },
     });
@@ -58,7 +65,10 @@ export class AuthService {
 
     await this.ensureAccountIsUsable(user);
 
-    const passwordValid = await verifyPassword(loginDto.password, user.passwordHash);
+    const passwordValid = await verifyPassword(
+      loginDto.password,
+      user.passwordHash,
+    );
     if (!passwordValid) {
       await this.recordFailedLoginAttempt(user);
       throw new UnauthorizedException('Invalid email or password');
@@ -176,7 +186,11 @@ export class AuthService {
         refreshToken: newRefreshToken,
         refreshExpiresInSeconds,
       } = await this.issueTokens(newPayload);
-      await this.touchSession(payload.sub, payload.sid, refreshExpiresInSeconds);
+      await this.touchSession(
+        payload.sub,
+        payload.sid,
+        refreshExpiresInSeconds,
+      );
 
       return {
         access_token: newAccessToken,
@@ -232,14 +246,24 @@ export class AuthService {
       return { message: 'Logged out successfully' };
     }
 
-    const sessionIds = await this.redis.zrange(this.userSessionsKey(userId), 0, -1);
+    const sessionIds = await this.redis.zrange(
+      this.userSessionsKey(userId),
+      0,
+      -1,
+    );
     await Promise.all(sessionIds.map((sid) => this.revokeSession(userId, sid)));
     return { message: 'Logged out successfully' };
   }
 
   async getActiveSessions(userId: string) {
-    const sessionIds = await this.redis.zrevrange(this.userSessionsKey(userId), 0, -1);
-    const sessions = await Promise.all(sessionIds.map((sid) => this.getSessionById(sid)));
+    const sessionIds = await this.redis.zrevrange(
+      this.userSessionsKey(userId),
+      0,
+      -1,
+    );
+    const sessions = await Promise.all(
+      sessionIds.map((sid) => this.getSessionById(sid)),
+    );
     return sessions.filter((session) => session && !session.revokedAt);
   }
 
@@ -252,7 +276,11 @@ export class AuthService {
       throw new ForbiddenException('Cannot revoke a session that is not yours');
     }
 
-    await this.redis.hset(this.sessionKey(sessionId), 'revokedAt', new Date().toISOString());
+    await this.redis.hset(
+      this.sessionKey(sessionId),
+      'revokedAt',
+      new Date().toISOString(),
+    );
     await this.redis.zrem(this.userSessionsKey(userId), sessionId);
 
     return { message: 'Session revoked successfully' };
@@ -271,9 +299,15 @@ export class AuthService {
     return { message: 'Account unlocked successfully' };
   }
 
-  async changePassword(userId: string, oldPassword: string, newPassword: string) {
+  async changePassword(
+    userId: string,
+    oldPassword: string,
+    newPassword: string,
+  ) {
     if (oldPassword === newPassword) {
-      throw new BadRequestException('New password must be different from old password');
+      throw new BadRequestException(
+        'New password must be different from old password',
+      );
     }
 
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -281,15 +315,18 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    const oldPasswordValid = await verifyPassword(oldPassword, user.passwordHash);
+    const oldPasswordValid = await verifyPassword(
+      oldPassword,
+      user.passwordHash,
+    );
     if (!oldPasswordValid) {
       throw new UnauthorizedException('Old password is incorrect');
     }
 
-    const recentHashes = [user.passwordHash, ...(user.passwordHistory ?? [])].slice(
-      0,
-      PASSWORD_HISTORY_LIMIT,
-    );
+    const recentHashes = [
+      user.passwordHash,
+      ...(user.passwordHistory ?? []),
+    ].slice(0, PASSWORD_HISTORY_LIMIT);
     for (const hash of recentHashes) {
       if (await verifyPassword(newPassword, hash)) {
         throw new BadRequestException(
@@ -299,10 +336,10 @@ export class AuthService {
     }
 
     const newHash = await hashPassword(newPassword);
-    user.passwordHistory = [user.passwordHash, ...(user.passwordHistory ?? [])].slice(
-      0,
-      PASSWORD_HISTORY_LIMIT,
-    );
+    user.passwordHistory = [
+      user.passwordHash,
+      ...(user.passwordHistory ?? []),
+    ].slice(0, PASSWORD_HISTORY_LIMIT);
     user.passwordHash = newHash;
     await this.userRepository.save(user);
 
@@ -369,12 +406,18 @@ export class AuthService {
     ttlSeconds: number,
   ): Promise<void> {
     const key = this.sessionKey(sessionId);
-    await this.redis.hset(key, 'expiresAt', new Date(Date.now() + ttlSeconds * 1000).toISOString());
+    await this.redis.hset(
+      key,
+      'expiresAt',
+      new Date(Date.now() + ttlSeconds * 1000).toISOString(),
+    );
     await this.redis.expire(key, ttlSeconds);
     await this.redis.zadd(this.userSessionsKey(userId), Date.now(), sessionId);
   }
 
-  private async getSessionById(sessionId: string): Promise<Record<string, string> | null> {
+  private async getSessionById(
+    sessionId: string,
+  ): Promise<Record<string, string> | null> {
     const session = await this.redis.hgetall(this.sessionKey(sessionId));
     if (!session || Object.keys(session).length === 0) {
       return null;
@@ -383,7 +426,10 @@ export class AuthService {
   }
 
   private async enforceConcurrentSessionLimit(userId: string): Promise<void> {
-    const maxSessions = this.configService.get<number>('MAX_CONCURRENT_SESSIONS', 3);
+    const maxSessions = this.configService.get<number>(
+      'MAX_CONCURRENT_SESSIONS',
+      3,
+    );
     const sessionCount = await this.redis.zcard(this.userSessionsKey(userId));
     if (sessionCount <= maxSessions) {
       return;
