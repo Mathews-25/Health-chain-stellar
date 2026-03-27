@@ -1,9 +1,8 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 
-import {
-  assertSorobanTxJob,
-} from '../../common/guards/on-chain-id.guard';
+import { assertSorobanTxJob } from '../../common/guards/on-chain-id.guard';
+import { JobDeduplicationPlugin } from '../plugins/job-deduplication.plugin';
 import {
   SorobanTxJob,
   SorobanTxResult,
@@ -11,7 +10,6 @@ import {
 } from '../types/soroban-tx.types';
 
 import { IdempotencyService } from './idempotency.service';
-import { JobDeduplicationPlugin } from '../plugins/job-deduplication.plugin';
 
 import type { Queue } from 'bull';
 
@@ -125,20 +123,18 @@ export class SorobanService {
   /**
    * Get real-time queue metrics for admin monitoring.
    *
-   * @returns Queue depth, failed jobs count, and DLQ count
+   * @returns Queue depth, failed jobs count, DLQ count, counters, and timings
    */
   async getQueueMetrics(): Promise<QueueMetrics> {
-    const [queueDepth, failedJobs, dlqCount] = await Promise.all([
-      this.txQueue.count(),
-      this.txQueue.getFailedCount(),
-      this.dlq.count(),
-    ]);
+    const detailed = await this.queueMetricsService.getDetailedMetrics();
 
     return {
-      queueDepth,
-      failedJobs,
-      dlqCount,
+      queueDepth: detailed.live.waiting + detailed.live.active,
+      failedJobs: detailed.live.failed,
+      dlqCount: detailed.live.dlqDepth,
       processingRate: 0, // Calculated separately if needed
+      counters: detailed.counters,
+      timings: detailed.timings,
     };
   }
 

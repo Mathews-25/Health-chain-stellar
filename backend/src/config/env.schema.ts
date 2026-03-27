@@ -1,3 +1,4 @@
+import { Transform, Type } from 'class-transformer';
 import {
   IsString,
   IsNumber,
@@ -11,7 +12,6 @@ import {
   Matches,
   IsInt,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
 
 /**
  * Canonical schema for all environment variables.
@@ -170,13 +170,7 @@ export class EnvironmentVariables {
 
   @IsOptional()
   @IsString()
-  SMTP_PASSWORD: string = '';
-
-  @IsOptional()
-  @IsString()
-  SMTP_FROM: string = 'noreply@example.com';
-
-  // ─── Rate Limiting ────────────────────────────────────────────────────────
+  SMTP_PASSWORD: string = ''; \n\n  @IsOptional() \n  @IsString() \n  SMTP_FROM: string = 'noreply@example.com'; \n\n  // ─── Account Lockout ─────────────────────────────────────────────────────\n\n  @IsOptional()\n  @Type(() => Number)\n  @IsInt()\n  @Min(3)\n  @Max(10)\n  MAX_FAILED_LOGIN_ATTEMPTS: number = 5;\n\n  @IsOptional()\n  @Type(() => Number)\n  @IsInt()\n  @Min(5)\n  @Max(60)\n  ACCOUNT_LOCK_MINUTES: number = 15;\n\n  // ─── Rate Limiting ────────────────────────────────────────────────────────
 
   @IsOptional()
   @Type(() => Number)
@@ -212,4 +206,22 @@ export class EnvironmentVariables {
   @IsInt()
   @Min(1)
   INVENTORY_FORECAST_HISTORY_DAYS: number = 30;
+
+  // ─── Data Retention ───────────────────────────────────────────────────────
+
+  @IsOptional()
+  @IsString()
+  RETENTION_JOB_CRON: string = '0 2 * * *';
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  RETENTION_SESSION_TTL_DAYS: number = 30;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  RETENTION_ACTIVITY_LOG_DAYS: number = 90;
 }

@@ -11,6 +11,12 @@ import {
   ReservedUnitInvariantService,
   UnitReservationCheck,
 } from '../common/invariants/reserved-unit.invariant';
+import {
+  PaginatedResponse,
+  PaginationQueryDto,
+  PaginationUtil,
+} from '../common/pagination';
+
 import { InventoryStockEntity } from './entities/inventory-stock.entity';
 
 @Injectable()
@@ -21,13 +27,20 @@ export class InventoryService {
     private readonly unitInvariant: ReservedUnitInvariantService,
   ) {}
 
-  async findAll(hospitalId?: string) {
+  async findAll(
+    hospitalId?: string,
+    paginationDto?: PaginationQueryDto,
+  ): Promise<PaginatedResponse<InventoryStockEntity>> {
+    const { page = 1, pageSize = 25 } = paginationDto || {};
     const where = hospitalId ? { bloodBankId: hospitalId } : {};
-    const data = await this.inventoryRepo.find({ where });
-    return {
-      message: 'Inventory items retrieved successfully',
-      data,
-    };
+
+    const [data, totalCount] = await this.inventoryRepo.findAndCount({
+      where,
+      skip: PaginationUtil.calculateSkip(page, pageSize),
+      take: pageSize,
+    });
+
+    return PaginationUtil.createResponse(data, page, pageSize, totalCount);
   }
 
   async findOne(id: string) {
@@ -190,103 +203,75 @@ export class InventoryService {
     }
   }
 
-  /**
-   * Returns reserved units to stock (e.g. when a downstream step fails after reserve).
-   */
-  async releaseStockByBankAndType(
+  async restoreStockOrThrow(
     bloodBankId: string,
     bloodType: string,
     quantity: number,
   ): Promise<void> {
     if (quantity <= 0) {
-      return;
+      throw new ConflictException(
+        'Restore quantity must be greater than zero.',
+      );
     }
+
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const stock = await this.findByBankAndBloodType(bloodBankId, bloodType);
+
+      if (!stock) {
+        const created = this.inventoryRepo.create({
+          bloodBankId,
+          bloodType,
+          availableUnits: quantity,
+        });
+        await this.inventoryRepo.save(created);
+        return;
+      }
+
+      const updateResult = await this.inventoryRepo
+        .createQueryBuilder()
+        .update(InventoryStockEntity)
+        .set({
+          availableUnits: () => `"available_units" + ${quantity}`,
+          version: () => '"version" + 1',
+        })
+        .where('id = :id', { id: stock.id })
+        .andWhere('"version" = :version', { version: stock.version })
+        .execute();
+
+      if (updateResult.affected === 1) {
+        return;
+      }
+
+      if (attempt === 0) {
+        continue;
+      }
+
+      throw new ConflictException(
+        'Inventory was updated by another request. Please retry restoring stock.',
+      );
+    }
+  }
+
+  async commitFulfillmentStockOrThrow(
+    bloodBankId: string,
+    bloodType: string,
+    _quantity: number,
+  ): Promise<void> {
+    const stock = await this.findByBankAndBloodType(bloodBankId, bloodType);
+
+    if (!stock) {
+      throw new ConflictException(
+        `No inventory found for blood type ${bloodType} at blood bank ${bloodBankId}.`,
+      );
+    }
+
     await this.inventoryRepo
       .createQueryBuilder()
       .update(InventoryStockEntity)
       .set({
-        availableUnits: () => `"available_units" + ${quantity}`,
         version: () => '"version" + 1',
       })
-      .where('"blood_bank_id" = :bloodBankId', { bloodBankId })
-      .andWhere('"blood_type" = :bloodType', { bloodType })
+      .where('id = :id', { id: stock.id })
       .execute();
-  }
-
-  async getCriticalStockItems() {
-    return this.getLowStockItems(5);
-  }
-
-  async getStockAggregation() {
-    const data = await this.inventoryRepo
-      .createQueryBuilder('inventory')
-      .select('inventory.bloodType', 'bloodType')
-      .addSelect('SUM(inventory.availableUnits)', 'totalUnits')
-      .groupBy('inventory.bloodType')
-      .getRawMany();
-
-    return {
-      message: 'Stock aggregation retrieved successfully',
-      data,
-    };
-  }
-
-  async getInventoryStats(hospitalId?: string) {
-    const where = hospitalId ? { bloodBankId: hospitalId } : {};
-    const items = await this.inventoryRepo.find({ where });
-
-    const totalUnits = items.reduce(
-      (sum, item) => sum + item.availableUnits,
-      0,
-    );
-    const lowStockCount = items.filter(
-      (item) => item.availableUnits <= 10,
-    ).length;
-
-    return {
-      message: 'Inventory stats retrieved successfully',
-      data: {
-        totalItems: items.length,
-        totalUnits,
-        lowStockCount,
-      },
-    };
-  }
-
-  async getReorderSummary() {
-    const lowStock = await this.getLowStockItems(10);
-    return {
-      message: 'Reorder summary retrieved successfully',
-      data: lowStock.data,
-    };
-  }
-
-  async reserveStock(id: string, quantity: number) {
-    const item = await this.inventoryRepo.findOne({ where: { id } });
-    if (!item) {
-      throw new NotFoundException(`Inventory item '${id}' not found`);
-    }
-    if (item.availableUnits < quantity) {
-      throw new ConflictException('Insufficient stock');
-    }
-    item.availableUnits -= quantity;
-    const data = await this.inventoryRepo.save(item);
-    return {
-      message: 'Stock reserved successfully',
-      data,
-    };
-  }
-
-  async releaseStock(id: string, quantity: number) {
-    const item = await this.inventoryRepo.findOne({ where: { id } });
-    if (!item) {
-      throw new NotFoundException(`Inventory item '${id}' not found`);
-    }
-    item.availableUnits += quantity;
-    const data = await this.inventoryRepo.save(item);
-    return {
-      message: 'Stock released successfully',
-      data,
-    };
   }
 }

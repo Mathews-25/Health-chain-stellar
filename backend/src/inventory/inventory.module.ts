@@ -8,16 +8,27 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { OrderEntity } from '../orders/entities/order.entity';
 import { UsersModule } from '../users/users.module';
 
+import { InventoryAlertController } from './controllers/inventory-alert.controller';
+import { AlertPreferenceEntity } from './entities/alert-preference.entity';
+import { InventoryAlertEntity } from './entities/inventory-alert.entity';
+import { InventoryStockEntity } from './entities/inventory-stock.entity';
 import { InventoryEntity } from './entities/inventory.entity';
 import { InventoryEventListener } from './inventory-event.listener';
 import { InventoryForecastingService } from './inventory-forecasting.service';
 import { InventoryController } from './inventory.controller';
 import { InventoryService } from './inventory.service';
 import { DonorOutreachProcessor } from './processors/donor-outreach.processor';
+import { InventoryAlertService } from './services/inventory-alert.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([OrderEntity, InventoryEntity]),
+    TypeOrmModule.forFeature([
+      OrderEntity,
+      InventoryEntity,
+      InventoryStockEntity,
+      InventoryAlertEntity,
+      AlertPreferenceEntity,
+    ]),
     BullModule.registerQueue({
       name: 'donor-outreach',
     }),
@@ -26,13 +37,18 @@ import { DonorOutreachProcessor } from './processors/donor-outreach.processor';
     NotificationsModule,
     UsersModule,
   ],
-  controllers: [InventoryController],
+  controllers: [InventoryController, InventoryAlertController],
   providers: [
     InventoryService,
     InventoryForecastingService,
     InventoryEventListener,
     DonorOutreachProcessor,
+    InventoryAlertService,
   ],
-  exports: [InventoryService, InventoryForecastingService],
+  exports: [
+    InventoryService,
+    InventoryForecastingService,
+    InventoryAlertService,
+  ],
 })
 export class InventoryModule {}
